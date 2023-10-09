@@ -7,14 +7,12 @@ import java.util.Scanner;
 public class Client implements Network {
     private BufferedReader in;
     private PrintWriter out;
-
+    private final Message stop = new Message(Message.Status.OK, ".");
     private final String address;
-
     private final Integer port;
     private Socket client;
 
     public void send(Message msg) {
-        System.out.println(msg);
         if (msg == null) {
             msg = new Message(Message.Status.ERROR, "Empty Message");
         }
@@ -31,6 +29,31 @@ public class Client implements Network {
         this.address = address;
         this.port = port;
     }
+
+    public void sendConsole() {
+        Scanner s = new Scanner(System.in);
+        String msg = s.next();
+        this.send(new Message(Message.Status.OK, msg));
+    }
+
+    public void mainloop() {
+        if (this.client == null) {
+            this.connect();
+        }
+        Message msg;
+        boolean stop = false;
+        while (!stop) {
+            this.sendConsole();
+            msg = this.recieve();
+            System.out.println(msg);
+            if (msg.equals(this.stop)) {
+                stop = true;
+                this.send(this.stop);
+            }
+        }
+        this.close();
+    }
+
     public void connect() {
         try {
             this.client = new Socket(this.address, this.port);
@@ -42,11 +65,7 @@ public class Client implements Network {
         } catch (IOException e) { throw new RuntimeException(e); }
 
     }
-    public void sendConsole() {
-        Scanner s = new Scanner(System.in);
-        String msg = s.next();
-        this.send(new Message(Message.Status.OK, msg));
-    }
+
     public void close() {
         try {
             this.client.close();

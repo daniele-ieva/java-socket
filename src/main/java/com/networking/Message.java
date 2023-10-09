@@ -15,6 +15,7 @@ public class Message {
     private Status status_code = null;
     private String msg = null;
 
+
     public Message(Status status, String msg) {
         this.status_code = status;
         this.msg = msg;
@@ -46,5 +47,13 @@ public class Message {
     @Override
     public String toString() {
         return this.status_code.toString() + "::" + this.msg;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == this.getClass()) {
+            return ((Message) obj).msg.equals(this.msg) && ((Message) obj).status_code.equals(this.status_code);
+        }
+        return super.equals(obj);
     }
 }
