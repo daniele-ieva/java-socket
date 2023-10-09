@@ -8,9 +8,9 @@ public class Client implements Network {
     private BufferedReader in;
     private PrintWriter out;
 
-    private String address;
+    private final String address;
 
-    private Integer port;
+    private final Integer port;
     private Socket client;
 
     public void send(Message msg) {
@@ -21,7 +21,7 @@ public class Client implements Network {
         out.println(msg);
     }
     public Message recieve() {
-        String msg = null;
+        String msg;
         try {
              msg = in.readLine();
         } catch (IOException e) { throw new RuntimeException(e); }

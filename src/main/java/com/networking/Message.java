@@ -29,10 +29,10 @@ public class Message {
     }
 
     public void ok() {
-        this.status_code = Status.OK;
+        this.setStatus(Status.OK);
     }
     public void error() {
-        this.status_code = Status.ERROR;
+        this.setStatus(Status.ERROR);
     }
     public static Message parse(String msg) {
         if (msg == null) {
@@ -47,5 +47,4 @@ public class Message {
     public String toString() {
         return this.status_code.toString() + "::" + this.msg;
     }
-
 }
