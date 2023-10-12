@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class Client implements Network {
     private BufferedReader in;
     private PrintWriter out;
-    private final Message stop = new Message(Message.Status.OK, ".");
     private final String address;
     private final Integer port;
     private Socket client;
@@ -32,7 +31,7 @@ public class Client implements Network {
 
     public void sendConsole() {
         Scanner s = new Scanner(System.in);
-        String msg = s.next();
+        String msg = s.nextLine();
         this.send(new Message(Message.Status.OK, msg));
     }
 
@@ -46,9 +45,9 @@ public class Client implements Network {
             this.sendConsole();
             msg = this.recieve();
             System.out.println(msg);
-            if (msg.equals(this.stop)) {
+            if (msg.equals(Message.stop())) {
                 stop = true;
-                this.send(this.stop);
+                this.send(Message.stop());
             }
         }
         this.close();

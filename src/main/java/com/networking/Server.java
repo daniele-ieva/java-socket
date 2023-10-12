@@ -14,7 +14,6 @@ public class Server implements Network {
     private final Integer port;
     private ServerSocket server = null;
     private Socket client = null;
-    private final Message stop = new Message(Message.Status.OK, ".");
 
     public void send(Message msg) {
         out.println(msg);
@@ -28,7 +27,7 @@ public class Server implements Network {
     }
     public void sendConsole() {
         Scanner s = new Scanner(System.in);
-        String msg = s.next();
+        String msg = s.nextLine();
         this.send(new Message(Message.Status.OK, msg));
     }
     public Server(Integer port) {
@@ -69,9 +68,9 @@ public class Server implements Network {
         while (!stop) {
             msg = this.recieve();
             System.out.println(msg);
-            if (msg.equals(this.stop)) {
+            if (msg.equals(Message.stop())) {
                 stop = true;
-                this.send(this.stop);
+                this.send(Message.stop());
             }
             else {
                 this.sendConsole();
