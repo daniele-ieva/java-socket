@@ -6,6 +6,14 @@ import java.util.Scanner;
 public class ReaderThread extends Thread {
     private final Scanner in;
     private final Mutex running;
+    /**
+     * A class generating a thread to read from a given Scanner asynchronously
+     * @see Thread
+     * @param in a scanner for a given InputStream
+     * @see Scanner
+     * @param running a mutex containing the status of the application, in order to stop when required
+     * @see Mutex
+     **/
     public ReaderThread(Scanner in, Mutex running) {
         this.in = in;
         this.running = running;
