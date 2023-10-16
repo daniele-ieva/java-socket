@@ -58,12 +58,7 @@ public class Server {
             this.start();
         }
 
-        Mutex running = new Mutex(true);
-        ReaderThread reader = new ReaderThread(this.in, running);
-        WriterThread writer = new WriterThread(this.out, running);
-        reader.start();
-        writer.start();
-        while (running.status());
+        IOUtils.syncIO(this.in, this.out);
         this.close();
     }
 
