@@ -7,29 +7,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Server implements Network {
-    private BufferedReader in = null;
+public class Server {
+    private Scanner in = null;
     private PrintWriter out = null;
     private final String address;
     private final Integer port;
     private ServerSocket server = null;
     private Socket client = null;
 
-    public void send(Message msg) {
-        out.println(msg);
-    }
-    public Message recieve() {
-        String msg;
-        try {
-            msg = in.readLine();
-        } catch (IOException e) { throw new RuntimeException(e); }
-        return Message.parse(msg);
-    }
-    public void sendConsole() {
-        Scanner s = new Scanner(System.in);
-        String msg = s.nextLine();
-        this.send(new Message(Message.Status.OK, msg));
-    }
     public Server(Integer port) {
         this.port = port;
         try {
@@ -42,11 +27,9 @@ public class Server implements Network {
             System.out.println("Started the server at: " + this);
             this.client = server.accept();
             System.out.println("Connection Established");
-            this.in = new BufferedReader(
-                    new InputStreamReader( this.client.getInputStream())
-            );
+            this.in = new Scanner(this.client.getInputStream());
             this.out = new PrintWriter(this.client.getOutputStream(), true);
-        } catch (IOException e) { throw new RuntimeException(e);}
+        } catch (IOException e) { this.close(); throw new RuntimeException(e);}
 
     }
     public void close() {
@@ -63,19 +46,15 @@ public class Server implements Network {
             this.start();
         }
 
-        boolean stop = false;
-        Message msg;
-        while (!stop) {
-            msg = this.recieve();
-            System.out.println(msg);
-            if (msg.equals(Message.stop())) {
-                stop = true;
-                this.send(Message.stop());
-            }
-            else {
-                this.sendConsole();
-            }
-        }
+        Mutex running = new Mutex(true);
+        ReaderThread reader = new ReaderThread(this.in, running);
+        WriterThread writer = new WriterThread(this.out, running);
+        reader.start();
+        writer.start();
+        while (running.status());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) { throw new RuntimeException(e); }
         this.close();
     }
 

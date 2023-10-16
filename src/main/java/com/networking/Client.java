@@ -4,8 +4,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client implements Network {
-    private BufferedReader in;
+public class Client {
+    private Scanner in;
     private PrintWriter out;
     private final String address;
     private final Integer port;
@@ -17,39 +17,24 @@ public class Client implements Network {
         }
         out.println(msg);
     }
-    public Message recieve() {
-        String msg;
-        try {
-             msg = in.readLine();
-        } catch (IOException e) { throw new RuntimeException(e); }
-        return Message.parse(msg);
-    }
     public Client(String address, Integer port) {
         this.address = address;
         this.port = port;
-    }
-
-    public void sendConsole() {
-        Scanner s = new Scanner(System.in);
-        String msg = s.nextLine();
-        this.send(new Message(Message.Status.OK, msg));
     }
 
     public void mainloop() {
         if (this.client == null) {
             this.connect();
         }
-        Message msg;
-        boolean stop = false;
-        while (!stop) {
-            this.sendConsole();
-            msg = this.recieve();
-            System.out.println(msg);
-            if (msg.equals(Message.stop())) {
-                stop = true;
-                this.send(Message.stop());
-            }
-        }
+        Mutex running = new Mutex(true);
+        ReaderThread reader = new ReaderThread(this.in, running);
+        WriterThread writer = new WriterThread(this.out, running);
+        reader.start();
+        writer.start();
+        while (running.status());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) { throw new RuntimeException(e); }
         this.close();
     }
 
@@ -57,9 +42,7 @@ public class Client implements Network {
         try {
             this.client = new Socket(this.address, this.port);
             System.out.println("Connection Established");
-            this.in = new BufferedReader(
-                    new InputStreamReader( client.getInputStream() )
-            );
+            this.in = new Scanner(this.client.getInputStream());
             this.out = new PrintWriter(this.client.getOutputStream(), true);
         } catch (IOException e) { throw new RuntimeException(e); }
 
