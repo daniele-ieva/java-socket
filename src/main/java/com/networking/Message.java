@@ -9,6 +9,10 @@ public class Message {
         Status(Integer code) {
             this.code = code;
         }
+
+        /**
+         * @return an integer representation of the code
+         */
         public Integer code() {
             return this.code;
         }
