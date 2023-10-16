@@ -11,12 +11,6 @@ public class Client {
     private final Integer port;
     private Socket client;
 
-    public void send(Message msg) {
-        if (msg == null) {
-            msg = new Message(Message.Status.ERROR, "Empty Message");
-        }
-        out.println(msg);
-    }
     public Client(String address, Integer port) {
         this.address = address;
         this.port = port;
