@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Server {
-    private Scanner in = null;
+    private BufferedReader in = null;
     private PrintWriter out = null;
     private final String address;
     private final Integer port;
@@ -35,7 +35,9 @@ public class Server {
             System.out.println("Started the server at: " + this);
             this.client = server.accept();
             System.out.println("Connection Established");
-            this.in = new Scanner(this.client.getInputStream());
+            this.in = new BufferedReader(
+                    new InputStreamReader(client.getInputStream())
+            );
             this.out = new PrintWriter(this.client.getOutputStream(), true);
         } catch (IOException e) { this.close(); throw new RuntimeException(e);}
 

@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    private Scanner in;
+    private BufferedReader in;
     private PrintWriter out;
     private final String address;
     private final Integer port;
@@ -28,7 +28,9 @@ public class Client {
         try {
             this.client = new Socket(this.address, this.port);
             System.out.println("Connection Established");
-            this.in = new Scanner(this.client.getInputStream());
+            this.in = new BufferedReader(
+                    new InputStreamReader(this.client.getInputStream())
+            );
             this.out = new PrintWriter(this.client.getOutputStream(), true);
         } catch (IOException e) { throw new RuntimeException(e); }
 

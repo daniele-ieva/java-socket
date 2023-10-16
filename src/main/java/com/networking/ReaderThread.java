@@ -1,9 +1,12 @@
 package com.networking;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Scanner;
 
 public class ReaderThread extends Thread {
-    private final Scanner in;
+    private final BufferedReader in;
     private final Mutex running;
     /**
      * A class generating a thread to read from a given Scanner asynchronously
@@ -13,7 +16,7 @@ public class ReaderThread extends Thread {
      * @param running a mutex containing the status of the application, in order to stop when required
      * @see Mutex
      **/
-    public ReaderThread(Scanner in, Mutex running) {
+    public ReaderThread(BufferedReader in, Mutex running) {
         this.in = in;
         this.running = running;
     }
@@ -23,18 +26,16 @@ public class ReaderThread extends Thread {
     public void mainloop() {
         Message reader;
         while (this.running.status()) {
-
-
-            if (in.hasNext()) {
-                reader = Message.parse(in.nextLine());
-                System.out.println(reader);
-                if (reader.equals(Message.stop())) {
-                    this.running.swap();
-                    System.out.println(this.running.status());
-                }
-                if (reader.status().equals(Message.Status.ERROR)) {
-                    this.running.swap();
-                }
+            try {
+                reader = Message.parse(in.readLine());
+            } catch (IOException e) { throw new RuntimeException(e); }
+            System.out.println(reader);
+            if (reader.equals(Message.stop())) {
+                this.running.swap();
+                System.out.println(this.running.status());
+            }
+            if (reader.status().equals(Message.Status.ERROR)) {
+                this.running.swap();
             }
         }
     }
