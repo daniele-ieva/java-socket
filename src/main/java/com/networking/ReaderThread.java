@@ -1,6 +1,5 @@
 package com.networking;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class ReaderThread extends Thread {
