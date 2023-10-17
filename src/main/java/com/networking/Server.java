@@ -55,12 +55,14 @@ public class Server {
      * Launch the main loop for the server that spawns two new threads for IO and to allow sending and receiving ù
      * multiple messages asynchronously
      **/
-    public void mainloop() {
+    public void run() {
         if (this.server == null) {
             this.start();
         }
 
         IOUtils.syncIO(this.in, this.out);
+        IOUtils.closeStreams(this.in, this.out);
+
         this.close();
     }
 

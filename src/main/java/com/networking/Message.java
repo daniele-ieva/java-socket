@@ -123,9 +123,10 @@ public class Message {
     **/
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() == this.getClass()) {
+        if (obj instanceof Message) {
             return ((Message) obj).msg.equals(this.msg) && ((Message) obj).status_code.equals(this.status_code);
         }
         return super.equals(obj);
     }
 }
+

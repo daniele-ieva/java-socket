@@ -15,11 +15,12 @@ public class Client {
         this.port = port;
     }
 
-    public void mainloop() {
+    public void run() {
         if (this.client == null) {
             this.connect();
         }
         IOUtils.syncIO(this.in, this.out);
+        IOUtils.closeStreams(this.in, this.out);
         this.close();
     }
 

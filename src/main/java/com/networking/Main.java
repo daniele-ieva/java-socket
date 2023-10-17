@@ -14,14 +14,14 @@ public class Main {
             String[] sep;
             sep = sel.split(":");
             Client client = new Client(sep[0], Integer.parseInt(sep[1]));
-            client.mainloop();
+            client.run();
             return;
         }
         if (sel.equals("server")) {
             System.out.print("Insert server port: ");
             sel = s.next();
             Server server = new Server(Integer.parseInt(sel));
-            server.mainloop();
+            server.run();
             return;
         }
         System.out.println("Please select a valid mode!");

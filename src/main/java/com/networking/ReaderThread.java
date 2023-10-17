@@ -2,6 +2,7 @@ package com.networking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.Buffer;
 import java.util.Scanner;
 
@@ -28,7 +29,8 @@ public class ReaderThread extends Thread {
         while (this.running.status()) {
             try {
                 reader = Message.parse(in.readLine());
-            } catch (IOException e) { throw new RuntimeException(e); }
+            }
+            catch (IOException e) { break; }
             System.out.println(reader);
             if (reader.equals(Message.stop())) {
                 this.running.swap();

@@ -1,6 +1,7 @@
 package com.networking;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -19,5 +20,12 @@ public abstract class IOUtils {
         while (running.status());
         reader.interrupt();
         writer.interrupt();
+    }
+
+    public static void closeStreams(BufferedReader in, PrintWriter out) {
+        try {
+            in.close();
+            out.close();
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 }

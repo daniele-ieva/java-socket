@@ -2,7 +2,6 @@ package com.networking;
 
 import java.io.PrintWriter;
 import java.util.Scanner;
-
 public class WriterThread extends Thread {
 
     private final PrintWriter out;
@@ -28,6 +27,9 @@ public class WriterThread extends Thread {
         Message msg;
         while (this.running.status()) {
             msg_str = s.nextLine();
+            if (msg_str.isEmpty()) {
+                msg_str = " ";
+            }
             if (this.running.status()) {
                 msg = new Message(Message.Status.OK, msg_str);
                 this.send(msg);
